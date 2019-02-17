@@ -1,11 +1,15 @@
 package rocks.zipcode.atm.bank;
 
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
+
 /**
  * @author ZipCodeWilmington
  */
 public abstract class Account {
 
     private AccountData accountData;
+
 
     public Account(AccountData accountData) {
         this.accountData = accountData;
@@ -15,11 +19,15 @@ public abstract class Account {
         return accountData;
     }
 
-    public void deposit(int amount) {
+    public void deposit(double amount) {
         updateBalance(getBalance() + amount);
     }
 
-    public boolean withdraw(int amount) {
+//    public void overdrawn(double amount) {
+//        updateBalance(amount - getBalance());
+//    }
+
+    public boolean withdraw(double amount) {
         if (canWithdraw(amount)) {
             updateBalance(getBalance() - amount);
             return true;
@@ -28,15 +36,15 @@ public abstract class Account {
         }
     }
 
-    protected boolean canWithdraw(int amount) {
+    protected boolean canWithdraw(double amount) {
         return getBalance() >= amount;
     }
 
-    public int getBalance() {
+    public double getBalance() {
         return accountData.getBalance();
     }
 
-    private void updateBalance(int newBalance) {
+    private void updateBalance(double newBalance) {
         accountData = new AccountData(accountData.getId(), accountData.getName(), accountData.getEmail(),
                 newBalance);
     }

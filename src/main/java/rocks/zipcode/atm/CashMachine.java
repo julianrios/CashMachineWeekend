@@ -3,6 +3,8 @@ package rocks.zipcode.atm;
 import rocks.zipcode.atm.bank.AccountData;
 import rocks.zipcode.atm.bank.Bank;
 
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
@@ -13,6 +15,7 @@ public class CashMachine {
 
     private final Bank bank;
     private AccountData accountData = null;
+    private NumberFormat formatter = new DecimalFormat("#0.00");
 
     public CashMachine(Bank bank) {
         this.bank = bank;
@@ -29,7 +32,7 @@ public class CashMachine {
         );
     }
 
-    public void deposit(int amount) {
+    public void deposit(double amount) {
         if (accountData != null) {
             tryCall(
                     () -> bank.deposit(accountData, amount),
@@ -38,13 +41,17 @@ public class CashMachine {
         }
     }
 
-    public void withdraw(int amount) {
+    public void withdraw(double amount) {
         if (accountData != null) {
             tryCall(
                     () -> bank.withdraw(accountData, amount),
                     update
             );
         }
+    }
+
+    public double getAccountBalance() {
+        return bank.getBalance(accountData);
     }
 
     public void exit() {
@@ -55,7 +62,28 @@ public class CashMachine {
 
     @Override
     public String toString() {
-        return accountData != null ? accountData.toString() : "Try account 1000 or 2000 and click submit.";
+        return accountData != null ? accountData.toString() : "Enter Account number and click Login.\n" +
+                "Accounts:\n1000\n2000\n3000\n4000\n";
+    }
+
+    public String accountIdToString() {
+        return accountData != null ? accountData.getId() + "" : "ID Required";
+    }
+
+    public String nameToString() {
+        return accountData != null ? accountData.getName() : "ID Required";
+    }
+
+    public String emailToString() {
+        return accountData != null ? accountData.getEmail() : "ID Required";
+    }
+
+    public String balanceToString() {
+        return accountData != null ? precisionFormatter(accountData.getBalance()) : "ID Required";
+    }
+
+    public String precisionFormatter(Double amount) {
+        return formatter.format(amount);
     }
 
     private <T> void tryCall(Supplier<ActionResult<T> > action, Consumer<T> postAction) {
@@ -72,4 +100,5 @@ public class CashMachine {
             System.out.println("Error: " + e.getMessage());
         }
     }
+
 }

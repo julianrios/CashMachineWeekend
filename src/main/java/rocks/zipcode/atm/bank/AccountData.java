@@ -1,5 +1,8 @@
 package rocks.zipcode.atm.bank;
 
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
+
 /**
  * @author ZipCodeWilmington
  */
@@ -9,9 +12,10 @@ public final class AccountData {
     private final String name;
     private final String email;
 
-    private final int balance;
+    // will the balance change?
+    private final Double balance;
 
-    AccountData(int id, String name, String email, int balance) {
+    AccountData(int id, String name, String email, double balance) {
         this.id = id;
         this.name = name;
         this.email = email;
@@ -30,15 +34,17 @@ public final class AccountData {
         return email;
     }
 
-    public int getBalance() {
+    public double getBalance() {
         return balance;
     }
 
     @Override
     public String toString() {
+        NumberFormat formatter = new DecimalFormat("#0.00");
+
         return "Account id: " + id + '\n' +
                 "Name: " + name + '\n' +
                 "Email: " + email + '\n' +
-                "Balance: " + balance;
+                "Balance: " + formatter.format(balance);
     }
 }
